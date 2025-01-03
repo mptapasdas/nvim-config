@@ -3,13 +3,13 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 --- cursor style
 -- Set the cursor color in insert mode
--- vim.cmd [[highlight Cursor guifg=black guibg=yellow]] -- Change this to your desired colors
-vim.cmd [[autocmd InsertEnter * highlight Cursor guifg=black guibg=grey]] -- For insert mode
-vim.cmd [[autocmd InsertLeave * highlight Cursor guifg=black guibg='#FFAB4C']]
+-- -- vim.cmd [[highlight Cursor guifg=black guibg=yellow]] -- Change this to your desired colors
+-- vim.cmd [[autocmd InsertEnter * highlight Cursor guifg=black guibg=grey]] -- For insert mode
+-- vim.cmd [[autocmd InsertLeave * highlight Cursor guifg=black guibg='#FFAB4C']]
+--
+-- vim.api.nvim_set_hl(0, 'Cursor', { fg = '#FF0000', bg = '#00FF00' }) -- Red on Green
 
-vim.api.nvim_set_hl(0, 'Cursor', { fg = '#FF0000', bg = '#00FF00' }) -- Red on Green
-
-vim.opt.guicursor = 'n-v-i-c:block-Cursor'
+-- vim.opt.guicursor = 'n-v-i-c:block-Cursor'
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
@@ -483,7 +483,7 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
+        ts_ls = {},
         --
 
         jdtls = {},
@@ -693,22 +693,59 @@ require('lazy').setup({
       }
     end,
   },
+
   {
-    --   -- change the command in the config to whatever the name of that colorscheme is.
-    --   --
-    --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+    'eldritch-theme/eldritch.nvim',
+    lazy = false,
+    priority = 1000,
+    opts = {},
+    config = function()
+      require('eldritch').setup {
+        transparent = false, -- Enable this to disable setting the background color
+        use_background = false,
+        terminal_colors = true, -- Configure the colors used when opening a `:terminal` in [Neovim](https://github.com/neovim/neovim)
+        styles = {
+          comments = { italic = true },
+          keywords = { italic = true },
+          functions = {},
+          variables = {},
+          sidebars = 'dark', -- style for sidebars, see below
+          floats = 'dark', -- style for floating windows
+        },
+        sidebars = { 'qf', 'help' }, -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
+        hide_inactive_statusline = true, -- Enabling this option, will hide inactive statuslines and replace them with a thin border instead. Should work with the standard **StatusLine** and **LuaLine**.
+        dim_inactive = false, -- dims inactive windows, transparent must be false for this to work
+        lualine_bold = true, -- When `true`, section headers in the lualine theme will be bold
+
+        ---@param colors ColorScheme
+        on_colors = function(colors) end,
+
+        ---@param highlights Highlights
+        ---@param colors ColorScheme
+        on_highlights = function(highlights, colors) end,
+      }
+    end,
     init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-moon'
-      --
-      --   -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
+      vim.cmd [[colorscheme eldritch]]
     end,
   },
+
+  -- {
+  --   --   -- change the command in the config to whatever the name of that colorscheme is.
+  --   --   --
+  --   --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  --   'folke/tokyonight.nvim',
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   init = function()
+  --     -- Load the colorscheme here.
+  --     -- Like many other themes, this one has different styles, and you could load
+  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --     vim.cmd.colorscheme 'tokyonight-moon'
+  --     --
+  --     --   -- You can configure highlights by doing something like:
+  --     vim.cmd.hi 'Comment gui=none'
+  --   end,
+  -- },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
