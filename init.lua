@@ -1,15 +1,11 @@
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
---- cursor style
--- Set the cursor color in insert mode
--- -- vim.cmd [[highlight Cursor guifg=black guibg=yellow]] -- Change this to your desired colors
--- vim.cmd [[autocmd InsertEnter * highlight Cursor guifg=black guibg=grey]] -- For insert mode
--- vim.cmd [[autocmd InsertLeave * highlight Cursor guifg=black guibg='#FFAB4C']]
---
--- vim.api.nvim_set_hl(0, 'Cursor', { fg = '#FF0000', bg = '#00FF00' }) -- Red on Green
 
--- vim.opt.guicursor = 'n-v-i-c:block-Cursor'
+vim.opt['tabstop'] = 4
+vim.opt['shiftwidth'] = 4
+-- cursor style
+vim.opt.guicursor = 'n-i-v-c:block'
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
@@ -73,6 +69,14 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+--tab key maps
+vim.keymap.set('n', '<leader>tc', '<cmd>tabnew<CR><cmd>Neotree<CR>')
+vim.keymap.set('n', '<leader>tx', '<cmd>tabclose<CR>')
+vim.keymap.set('n', '<leader>t1', '<cmd>tabnext 1<CR>')
+vim.keymap.set('n', '<leader>t2', '<cmd>tabnext 2<CR>')
+vim.keymap.set('n', '<leader>t3', '<cmd>tabnext 3<CR>')
+vim.keymap.set('n', '<leader>t4', '<cmd>tabnext 4<CR>')
 
 vim.api.nvim_set_keymap('n', '<leader>ft', '<cmd>Neotree<CR>', { silent = true })
 -- vim.api.nvim_set_keymap('n', '<leader>ft', '<cmd>Neotree<CR>', { silent = true })
@@ -294,7 +298,9 @@ require('lazy').setup({
       end, { desc = '[S]earch [N]eovim files' })
     end,
   },
-
+  {
+    'mfussenegger/nvim-jdtls',
+  },
   -- LSP Plugins
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -486,7 +492,9 @@ require('lazy').setup({
         ts_ls = {},
         --
 
-        jdtls = {},
+        -- jdtls = {
+        --   opts = {},
+        -- },
 
         lua_ls = {
           -- cmd = { ... },
@@ -743,42 +751,104 @@ require('lazy').setup({
     end,
   },
 
+  -- {
+  --   'eldritch-theme/eldritch.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   opts = {},
+  --   config = function()
+  --     require('eldritch').setup {
+  --       transparent = false, -- Enable this to disable setting the background color
+  --       use_background = false,
+  --       terminal_colors = true, -- Configure the colors used when opening a `:terminal` in [Neovim](https://github.com/neovim/neovim)
+  --       styles = {
+  --         comments = { italic = true },
+  --         keywords = { italic = true },
+  --         functions = {},
+  --         variables = {},
+  --         sidebars = 'dark', -- style for sidebars, see below
+  --         floats = 'dark', -- style for floating windows
+  --       },
+  --       sidebars = { 'qf', 'help' }, -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
+  --       hide_inactive_statusline = true, -- Enabling this option, will hide inactive statuslines and replace them with a thin border instead. Should work with the standard **StatusLine** and **LuaLine**.
+  --       dim_inactive = false, -- dims inactive windows, transparent must be false for this to work
+  --       lualine_bold = true, -- When `true`, section headers in the lualine theme will be bold
+  --
+  --       ---@param colors ColorScheme
+  --       on_colors = function(colors) end,
+  --
+  --       ---@param highlights Highlights
+  --       ---@param colors ColorScheme
+  --       on_highlights = function(highlights, colors) end,
+  --     }
+  --   end,
+  --   init = function()
+  --     vim.cmd [[colorscheme eldritch]]
+  --   end,
+  -- },
+
   {
-    'eldritch-theme/eldritch.nvim',
-    lazy = false,
+    'catppuccin/nvim',
+    name = 'catppuccin',
     priority = 1000,
+    lazy = false,
     opts = {},
     config = function()
-      require('eldritch').setup {
-        transparent = false, -- Enable this to disable setting the background color
-        use_background = false,
-        terminal_colors = true, -- Configure the colors used when opening a `:terminal` in [Neovim](https://github.com/neovim/neovim)
-        styles = {
-          comments = { italic = true },
-          keywords = { italic = true },
-          functions = {},
-          variables = {},
-          sidebars = 'dark', -- style for sidebars, see below
-          floats = 'dark', -- style for floating windows
+      require('catppuccin').setup {
+        flavour = 'auto', -- latte, frappe, macchiato, mocha
+        background = { -- :h background
+          light = 'latte',
+          dark = 'mocha',
         },
-        sidebars = { 'qf', 'help' }, -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
-        hide_inactive_statusline = true, -- Enabling this option, will hide inactive statuslines and replace them with a thin border instead. Should work with the standard **StatusLine** and **LuaLine**.
-        dim_inactive = false, -- dims inactive windows, transparent must be false for this to work
-        lualine_bold = true, -- When `true`, section headers in the lualine theme will be bold
-
-        ---@param colors ColorScheme
-        on_colors = function(colors) end,
-
-        ---@param highlights Highlights
-        ---@param colors ColorScheme
-        on_highlights = function(highlights, colors) end,
+        transparent_background = false, -- disables setting the background color.
+        show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
+        term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
+        dim_inactive = {
+          enabled = false, -- dims the background color of inactive window
+          shade = 'dark',
+          percentage = 0.15, -- percentage of the shade to apply to the inactive window
+        },
+        no_italic = false, -- Force no italic
+        no_bold = false, -- Force no bold
+        no_underline = false, -- Force no underline
+        styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
+          comments = { 'italic' }, -- Change the style of comments
+          conditionals = { 'italic' },
+          loops = {},
+          functions = {},
+          keywords = {},
+          strings = {},
+          variables = {},
+          numbers = {},
+          booleans = {},
+          properties = {},
+          types = {},
+          operators = {},
+          -- miscs = {}, -- Uncomment to turn off hard-coded styles
+        },
+        color_overrides = {},
+        custom_highlights = {},
+        default_integrations = true,
+        integrations = {
+          cmp = true,
+          gitsigns = true,
+          nvimtree = true,
+          treesitter = true,
+          notify = false,
+          mini = {
+            enabled = true,
+            indentscope_color = '',
+          },
+          -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
+        },
       }
-    end,
-    init = function()
-      vim.cmd [[colorscheme eldritch]]
+
+      -- setup must be called before loading
+      vim.cmd.colorscheme 'catppuccin'
     end,
   },
 
+  -- NOTE: this is the official starter.nvim theme
   -- {
   --   --   -- change the command in the config to whatever the name of that colorscheme is.
   --   --   --
