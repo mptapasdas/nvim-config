@@ -5,9 +5,9 @@ return {
 			border = "rounded",
 			dimensions = {
 				height = 0.6,
-				width = 0.6,
-				x = 0.8,
-				y = 0.2,
+				width = 0.5,
+				x = 0.9,
+				y = 0.1,
 			},
 		})
 
